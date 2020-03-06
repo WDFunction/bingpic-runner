@@ -15,7 +15,6 @@ const client = new OSS({
 });
 
 async function downloadImage(url) {
-    // axios image download with response type "stream"
     const response = await axios({
         method: 'GET',
         url: url,
@@ -25,10 +24,8 @@ async function downloadImage(url) {
     let fileType = response.headers['content-type'].split('/')[1]
     let localFilename = `${os.tmpdir()}/${new Date().valueOf()}.${fileType}`;
 
-    // pipe the result stream into a file on disc
     response.data.pipe(fs.createWriteStream(localFilename))
 
-    // return a promise and resolve when download finishes
     return new Promise((resolve, reject) => {
         response.data.on('end', () => {
             resolve({ fileType, localFilename })
@@ -63,7 +60,12 @@ async function start() {
             fs.writeFileSync(`${os.tmpdir()}/latestUrl.txt`, remoteUrl)
             client.put('latestUrl.txt', `${os.tmpdir()}/latestUrl.txt`).then(res => {
                 console.log('upload data success')
+                fs.writeFileSync(`${os.tmpdir()}/latestFilename.txt`, filename)
+                client.put('latestFilename.txt', `${os.tmpdir()}/latestFilename.txt`).then(res => {
+                    console.log('upload filename success')
+                })
             })
+
         })
     } else {
         console.log('dont need to update')
