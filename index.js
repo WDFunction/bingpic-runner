@@ -43,13 +43,13 @@ async function start() {
     try {
         await client.get('latestUrl.txt', `${os.tmpdir()}/latestUrl.txt`)
         latestUrl = fs.readFileSync(`${os.tmpdir()}/latestUrl.txt`).toString()
+        console.log('latest', latestUrl)
     } catch (e) { console.log('latestUrl file not found'); console.log(e) }
     let r = await axios('https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=1')
     let remoteUrl = r.data.images[0].url
+    console.log('remote', remoteUrl)
     if (latestUrl !== remoteUrl) {
         console.log('need fetch')
-        console.log('latest', latestUrl)
-        console.log('remote', remoteUrl)
         let { fileType, localFilename } = await downloadImage(`https://bing.com${remoteUrl}`)
         console.log(fileType, localFilename)
 
