@@ -15,20 +15,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
-      - name: Cache NPM dependencies
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-npm-cache
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache
-      - name: Install Dependencies
-        run: |
-          npm install -g yarn
-          yarn --frozen-lockfile --non-interactive
       - name: Run Script
         run: |
-          node index.js
+          node dist/index.js
         env:
           KEY: ${{ secrets.KEY }}
           SECRET: ${{ secrets.SECRET }}
