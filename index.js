@@ -37,7 +37,6 @@ async function downloadImage(url) {
     })
 }
 
-
 async function start() {
     let latestUrl = ""
     try {
@@ -72,4 +71,6 @@ async function start() {
     }
 }
 
-start();
+exports.pubSubEntry = (event, context) => {
+    start();
+}
