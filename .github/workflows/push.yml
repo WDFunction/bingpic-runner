@@ -1,7 +1,5 @@
 name: Pull Bing Pictures
 on:
-  schedule:
-    - cron: "*/25 * * * *"
   push:
     branches:
       - master
