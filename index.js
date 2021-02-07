@@ -19,23 +19,10 @@ async function downloadImage(url) {
     const response = await axios({
         method: 'GET',
         url: url,
-        responseType: 'stream'
+        responseType: 'arraybuffer'
     })
 
-    let fileType = response.headers['content-type'].split('/')[1]
-    let localFilename = `${os.tmpdir()}/${new Date().valueOf()}.${fileType}`;
-
-    response.data.pipe(fs.createWriteStream(localFilename))
-
-    return new Promise((resolve, reject) => {
-        response.data.on('end', () => {
-            resolve({ fileType, localFilename })
-        })
-
-        response.data.on('error', () => {
-            reject()
-        })
-    })
+    return Buffer.from(response.data, 'binary')
 }
 
 async function start() {
@@ -50,23 +37,16 @@ async function start() {
     console.log('remote', remoteUrl)
     if (latestUrl !== remoteUrl) {
         console.log('need fetch')
-        let { fileType, localFilename } = await downloadImage(`https://bing.com${remoteUrl}`)
-        console.log(fileType, localFilename)
+        let fileBuf= await downloadImage(`https://bing.com${remoteUrl}`)
 
         let date = new Date();
-        let filename = `${date.getFullYear()}/${zero(date.getMonth()+1)}/${zero(date.getDate())}`+ "." + fileType
-        client.put(filename, localFilename).then(res => {
-            console.log('upload image success')
-            fs.writeFileSync(`${os.tmpdir()}/latestUrl.txt`, remoteUrl)
-            client.put('latestUrl.txt', `${os.tmpdir()}/latestUrl.txt`).then(res => {
-                console.log('upload data success')
-                fs.writeFileSync(`${os.tmpdir()}/latestFilename.txt`, filename)
-                client.put('latestFilename.txt', `${os.tmpdir()}/latestFilename.txt`).then(res => {
-                    console.log('upload filename success')
-                })
-            })
-
-        })
+        let filename = `${date.getFullYear()}/${zero(date.getMonth()+1)}/${zero(date.getDate())}`+ ".jpeg"
+        await client.put(filename, fileBuf)
+        console.log('upload image success')
+        await client.put('latestUrl.txt', Buffer.from(remoteUrl))
+        console.log('upload data success')
+        await client.put('latestFilename.txt', Buffer.from(filename))
+        console.log('upload filename success')
     } else {
         console.log('dont need to update')
     }
