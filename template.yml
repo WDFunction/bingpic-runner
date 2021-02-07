@@ -11,8 +11,14 @@ Resources:
         Runtime: custom
         CodeUri: ./
         MemorySize: 256
-        InstanceConcurrency: 1
         Timeout: 30
 
         EnvironmentVariables:
           BOOTSTRAP_FILE: bootstrap
+      Events:
+        timer:
+          Type: Timer
+          Properties:
+            CronExpression: "0 0 * * * *"
+            Enable: True
+            Payload: "littlec"

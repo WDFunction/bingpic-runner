@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "build": "ncc build index.js -m"
+    "build": "ncc build index.js -m",
+    "deploy":"yarn build && fun deploy -y"
   },
   "dependencies": {
     "ali-oss": "^6.13.2",

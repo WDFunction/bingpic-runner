@@ -47,6 +47,7 @@ async function start() {
         console.log('upload data success')
         await client.put('latestFilename.txt', Buffer.from(filename))
         console.log('upload filename success')
+        await client.copy('latest.jpeg', filename)
     } else {
         console.log('dont need to update')
     }
