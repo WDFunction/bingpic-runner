@@ -1,8 +1,7 @@
 {
   "dependencies": {
-    "ali-oss": "^6.5.1",
+    "ali-oss": "^6.13.2",
     "axios": "^0.21.1",
-    "dotenv": "^8.2.0",
-    "moment": "^2.24.0"
+    "dotenv": "^8.2.0"
   }
 }

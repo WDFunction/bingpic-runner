@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 const axios = require('axios')
-const moment = require('moment')
 const os = require('os')
 const OSS = require('ali-oss');
 const fs = require('fs')
@@ -13,6 +12,8 @@ const client = new OSS({
     accessKeySecret: SECRET,
     bucket: 'bingpic-wdljt'
 });
+
+const zero = (v) => v.toString().padStart(2, '0')
 
 async function downloadImage(url) {
     const response = await axios({
@@ -53,7 +54,7 @@ async function start() {
         console.log(fileType, localFilename)
 
         let date = new Date();
-        let filename = moment(date).format("YYYY/MM/DD") + "." + fileType
+        let filename = `${date.getFullYear()}/${zero(date.getMonth()+1)}/${zero(date.getDate())}`+ "." + fileType
         client.put(filename, localFilename).then(res => {
             console.log('upload image success')
             fs.writeFileSync(`${os.tmpdir()}/latestUrl.txt`, remoteUrl)
@@ -71,6 +72,4 @@ async function start() {
     }
 }
 
-exports.pubSubEntry = (event, context) => {
-    start();
-}
+start()
